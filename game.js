@@ -6,12 +6,13 @@ const Game = function(w,h) {
 };
 Game.prototype = { constructor : Game };
 
-Game.World = function(w = 100, h = 100, cw = 10, ch = 10, g = 1) { // cw := camera width // world goes around 0 <=> maxlen (-w/2 to w/2)
+Game.World = function(w = 100, h = 100, cw = 10, ch = 10) {
 	this.height = h;
 	this.width = w;
 	this.camera = new Camera(0,0,cw, ch);
-	this.gravity = g;
-
+	//this.gravity = g;
+	
+	this.me = undefined;
 	this.players = [];
 
 };
@@ -21,11 +22,11 @@ Game.World.prototype = {
   
 	setup:function() {
 		console.log("Capture The Flag [pitch-controlled] vALPHA 0.01");
-	
+		this.me = new Player(f.rand(1,cw),f.rand(1,h-1),1,1);
 	},
 
 	update:function() {
-
+		this.camera.update(me);
 	}
 };
 
@@ -36,6 +37,22 @@ class f{
 	static lerp(num, factor = .5){
 		return num * factor;
 	}
+	
+	static toDeg(a){
+		return a * 180 /Math.PI;
+	}
+	static toRad(a){
+		return a * Math.PI / 180;
+	}
+	static random(a,b = null){
+		if(f.exists(b)){
+			return a + Math.random(b-a);
+		}
+		else {
+			return Math.random(a);
+		}
+	}
+	static rand(a,b=null){return this.random(a,b);}
 	static v = class v{ // vector 2d functions
 		static normalize(v){
 			let m = this.mag(v);
@@ -101,7 +118,7 @@ Game.Camera = function(xx,yy){
 	// add shake animations with theta
 };
 Game.Camera.prototype = {
-	constructor: Game.Cannon,
+	constructor: Game.Camera,
 	shake:function(){
 		this.shakeFrames = 12;
 	}
@@ -185,13 +202,15 @@ class Projectile extends Transform{
 	update(){
 		super.update();
 		
-		this.pos = f.v.add(this.pos, f.v.projectAngle(speed, theta));
+		// lerp vx?
+		
+		this.v = f.v.multiply(f.v.normal(this.theta),speed);
 	}
 }
 
 class Bullet extends Projectile{
-	// **************************************************************************************************************************************************************
-	constructor(){
+	constructor(x,y,vx,vy,theta=0,av=0){
+		this.super(x,y,vx,vy,theta,av);
 		this.isDead = false;
 		this.framesLeftToShoot = 60;
 	}
@@ -202,12 +221,11 @@ class Bullet extends Projectile{
 		this.framesLeftToShoot--;
 		
 		if(this.framesLeftToShoot <= 0){
-			isDead = true;
+			this.isDead = true;
 		}
 	}
 }
 
-// AUDIO SOMEWHERE  // ***********************************************************************************************************************************************************
 //audio is html-specific
 class Player extends Projectile{
 	constructor(x = 0,y = 0,vx = 0,vy = 0, theta = 0, av=0){
@@ -220,13 +238,12 @@ class Player extends Projectile{
 		this.rSpeed = 1;
 		this.maxRSpeed = 8;
 	}
-	update(){		
-		this.framesLeftToShoot += -1;
+	update(){
 		super.update();
 		
-		this.av *= .7;
-		this.av += this.rSpeed * this.control;
-		if (this.av > this.maxRSpeed){ this.av = this.maxRSpeed; }
+		av *= .7;
+		av += rSpeed * this.control;
+		if (av > maxRSpeed){ av = maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
 			this.framesLeftToShoot = 10;
@@ -240,15 +257,17 @@ class Player extends Projectile{
 				}
 			}
 		);
-		// ***********************************************************************************************************************************************************
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
-		this.pos = f.v.add(this.pos, force);
+		this.this.pos = f.v.add(this.pos, force);
 	}	
 	shoot(){
-		this.bullets.push(new Bullet()); // **************************************************************************************************************************************************************
-		//should just be new Bullet(), no constructors, I believe
+		let shootingSpeed = 8;
+		this.bullets.push(/*new Bullet*/); // **************************************************************************************************************************************************************
+		playSound("/sounds/shoot.wav");
+		// need lerp for this below
+		// this.pos = f.v.add(this.pos, force);
 	}
 }
 

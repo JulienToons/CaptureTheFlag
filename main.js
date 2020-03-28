@@ -126,6 +126,8 @@ window.addEventListener("load", function(event) {
 	};
 	var render = function() {
 		display.update();
+		
+		display.drawRectangle(game.world.me.x,game.world.me.y);
 		// render gameobjects
 		display.render();
 	};
