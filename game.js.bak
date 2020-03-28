@@ -1,0 +1,54 @@
+const Game = function(w,h) {
+	this.world    = new Game.World(w,h);
+	this.update   = function(t = 0) {
+		this.world.update();
+	};
+};
+Game.prototype = { constructor : Game };
+
+Game.World = function(w = 100, h = 100, cw = 10, ch = 10, g = 1) { // cw := camera width // world goes around 0 <=> maxlen (-w/2 to w/2)
+	this.height = h;
+	this.width = w;
+	this.camera = new Camera(0,0,cw, ch);
+	this.gravity = g;
+
+	this.balls = []
+
+	this.players = []; // player contains string and hammer
+	this.user = null;
+
+	this.particles = [];
+
+};
+Game.World.prototype = {
+
+	constructor: Game.World,
+  
+	setup:function() {
+		console.log("Capture The Flag [pitch-controlled] vALPHA 0.01");
+	
+	},
+
+	update:function() {
+
+	}
+};
+Game.Camera = function(xx,yy){
+	this.x = xx;
+	this.y = yy;
+	this.x_offset = 0;
+	this.y_offset = 0;
+	this.theta = 0;
+	this.following = null;
+	this.shakeFrames = 0;
+	// add shake animations with theta
+};
+Game.Camera.prototype = {
+	constructor: Game.Cannon,
+	shake:function(){
+		this.shakeFrames = 12;
+	}
+	update:function(){
+		
+	}
+};
