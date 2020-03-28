@@ -34,6 +34,65 @@ Game.World.prototype = {
 	}
 };
 
+// Staitc Helper Functions
+class f{
+	static get ELPSILON(){return .00000001}
+	static toRadians(d){ return d * Math.PI/180;}
+	static lerp(num, factor = .5){
+		return num * factor;
+	}
+	static v = class v{ // vector 2d functions
+		static normalize(v){
+			let m = this.mag(v);
+			return [v[0]/m, v[1]/m];		
+		}
+		static normal(theta){
+			return [Math.cos(theta), Math.sin(theta)];
+		}
+		
+		static multiply (v, m){ return [v[0] * m, v[1] * m];}
+		static mult (v, m){ return [v[0] * m, v[1] * m];}
+		
+		static mag(v){ return this.vectorDistance(v[0],v[1]);}
+		static dist(v){ return this.vectorDistance(v[0],v[1]);}
+		static distance(v){ return this.vectorDistance(v[0],v[1]);}
+		static vectorDistance(x,y){
+			return Math.sqrt((x*x)+(y*y));
+		}
+		
+		static add(a,b){ // 2d vectors only
+			return [a[0] + b[0], a[1] + b[1]];
+		}
+		static addition(a,b){ return this.add(a,b); }
+		
+		static difference(a,b){
+			return [a[0] - b[0], a[1] - b[1]];
+		}
+		static subtract(a,b){ return this.difference(a,b);}
+		static subtraction(a,b){ return this.difference(a,b);}
+		
+		static project(vector, b){ // v onto b
+			let mag = Math.dot(vector, b) / Math.dot(b,b);
+			let c = [b[0] * mag, b[1] * mag];
+			return c;
+			// Math.sqrt(Math.dot(vector) - Math.dot(b));
+		}
+		static proj(v,b){ return this.project(v,b);}
+		
+		static projectAngle(vector, theta){
+			// theta counterclockwise from --->
+			return project(vector, [Math.cos(theta), Math.sin(theta)]);
+		}
+		
+		static rotate(v, theta) {
+			return [v[0] * Math.cos(theta) - v[1] * Math.sin(theta), v[0] * Math.sin(theta) + v[1] * Math.cos(theta)];
+		}
+		static rotateXY(x,y,t){
+			return this.rotate([x,y],t);
+		}
+	}
+}
+
 Game.Camera = function(xx,yy){
 	this.x = xx;
 	this.y = yy;
@@ -53,15 +112,10 @@ Game.Camera.prototype = {
 	}
 	update:function(player){
 		// lerp function (aka slowly moves to player's pos as if connected by a smooth spring
-		this.x = (player.x) + (this.lerpFactor * (this.x - player.x));
-		this.y = (player.y) + (this.lerpFactor * (this.y - player.y));
+		this.x = (Math.abs(this.x - player.x) <= this.snapDistance)   (player.x) + (this.lerpFactor * (this.x - player.x))  :  player.x;
+		this.y = (Math.abs(this.x - player.x) <= this.snapDistance)   (player.y) + (this.lerpFactor * (this.y - player.y))  :  player.y;
 	}
 };
-
-// Staitc Helper Functions
-class f{
-	static get ELPSILON(){return .00000001}
-}
 
 // Generic Extendable Classes
 class Position{
@@ -127,6 +181,31 @@ class Transform extends StrictTransform{
 		this.angularVelocity = x;
 	}
 };
+
+class Player extends Transform{
+	constructor(x = 0,y = 0,vx = 0,vy = 0, theta = 0, av=0){
+		super(x,y,vx,vy,theta,av);
+		this.health = 100;
+		this.control = -1; // float ( left to right )
+	}
+	update(){
+		let speed = 5;
+		let rSpeed = 1;
+		let maxRSpeed = 10;
+		
+		super.update();
+		this.pos = f.v.add(this.pos, f.v.projectAngle(speed, theta));
+		this.theta += av;
+		
+		av *= .7;
+		av += rSpeed * this.control;
+		if (av > maxRSpeed){ av = maxRSpeed; }
+	}
+	hit(dmg = 1, force = [0,0]){
+		this.health += -Math.abs(dmg);
+		this.this.pos = f.v.add(this.pos, f.v.projectAngle(speed, force));
+	}	
+}
 
 private class Particle extends StrictTransform{
 	constructor(x = 0,y = 0,vx = 0,vy = 0, duration = 50, color = "#555", a = 1) {
