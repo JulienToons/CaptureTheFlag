@@ -191,6 +191,20 @@ class Projectile extends Transform{
 
 class Bullet extends Projectile{
 	// **************************************************************************************************************************************************************
+	constructor(){
+		this.isDead = false;
+		this.framesLeftToShoot = 60;
+	}
+	
+	update(){
+		super.update();
+		
+		this.framesLeftToShoot--;
+		
+		if(this.framesLeftToShoot <= 0){
+			isDead = true;
+		}
+	}
 }
 
 class Player extends Projectile{
@@ -215,6 +229,14 @@ class Player extends Projectile{
 			this.framesLeftToShoot = 10;
 			this.shoot();
 		}
+
+		this.bullets.forEach((bill) => 
+			{
+				if(bill.isDead){
+					console.log("DESTROYED " + this.bullets.remove(bill));
+				}
+			}
+		);
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
