@@ -12,12 +12,7 @@ Game.World = function(w = 100, h = 100, cw = 10, ch = 10, g = 1) { // cw := came
 	this.camera = new Camera(0,0,cw, ch);
 	this.gravity = g;
 
-	this.balls = []
-
-	this.players = []; // player contains string and hammer
-	this.user = null;
-
-	this.particles = [];
+	this.players = [];
 
 };
 Game.World.prototype = {
@@ -187,6 +182,9 @@ class Player extends Transform{
 		super(x,y,vx,vy,theta,av);
 		this.health = 100;
 		this.control = -1; // float ( left to right )
+		this.bullets = [];
+		
+		this.framesLeftToShoot = 15;
 	}
 	update(){
 		let speed = 5;
@@ -200,11 +198,19 @@ class Player extends Transform{
 		av *= .7;
 		av += rSpeed * this.control;
 		if (av > maxRSpeed){ av = maxRSpeed; }
+		
+		if(this.framesLeftToShoot <= 0){
+			this.framesLeftToShoot = 10;
+			this.shoot();
+		}
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
 		this.this.pos = f.v.add(this.pos, force);
 	}	
+	shoot(){
+		
+	}
 }
 
 private class Particle extends StrictTransform{
