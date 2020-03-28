@@ -42,6 +42,8 @@ Game.Camera = function(xx,yy){
 	this.theta = 0;
 	this.following = null;
 	this.shakeFrames = 0;
+	this.lerpFactor = .2;
+	this.snapDistance = 2;
 	// add shake animations with theta
 };
 Game.Camera.prototype = {
@@ -49,8 +51,10 @@ Game.Camera.prototype = {
 	shake:function(){
 		this.shakeFrames = 12;
 	}
-	update:function(){
-		
+	update:function(player){
+		// lerp function (aka slowly moves to player's pos as if connected by a smooth spring
+		this.x = (Math.abs(this.x - player.x) <= this.snapDistance)   (player.x) + (this.lerpFactor * (this.x - player.x))  :  player.x;
+		this.y = (Math.abs(this.x - player.x) <= this.snapDistance)   (player.y) + (this.lerpFactor * (this.y - player.y))  :  player.y;
 	}
 };
 
