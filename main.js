@@ -9,6 +9,90 @@ window.globalWasHeroMoving = true;
 window.updateOccupancyCounter = false; // Occupancy Counter variable to check if the timer has already been called in that scene
 window.keyMessages = [];
 
+
+window.createMyPubNub = function (currentLevel) {
+  // console.log('createMyPubNub', currentLevel);
+  window.globalCurrentLevel = currentLevel; // Get the current level and set it to the global level
+
+  //The channels should be the same while we have only one map/level
+  window.currentFireChannelName = 'realtimephaserFire2';
+  window.currentChannelName = `realtimephaser${currentLevel}`; // Create the channel name + the current level. This way each level is on its own channel.
+  let checkIfJoined = false; // If player has joined the channel
+  // Setup your PubNub Keys
+  window.pubnub = new window.PubNub({
+    publishKey: 'pub-c-341e4eab-1e92-41c2-a707-eeb0a8e97e43',
+    subscribeKey: 'sub-c-645faf0a-7143-11ea-8eaf-9ea4064cf66f',
+    uuid: window.UniqueID,
+  });
+  // Subscribe to the two PubNub Channels
+  window.pubnub.subscribe({
+    channels: [window.currentChannelName, window.currentFireChannelName],
+    withPresence: true,
+  });
+  // ADD LISTENER HERE
+
+
+  window.sendKeyMessage = (keyMessage) => {
+  try {
+    if (window.globalMyHero) {
+      window.pubnub.publish({
+        message: {
+          uuid: window.UniqueID,
+          keyMessage,
+          position: window.globalMyHero.body.position,
+          frameCounter: window.frameCounter
+        },
+        channel: window.currentChannelName,
+        sendByPost: false, // true to send via posts
+      });
+    }
+	      // console.log("send message!")
+	  } catch (err) {
+	    console.log(err);
+	  }
+	};
+	window.fireCoins = () => {
+	  const message = {
+	    uuid: window.UniqueID,
+	    coinCache: window.globalLevelState.coinCache,
+	    currentLevel: window.globalCurrentLevel,
+	    time: window.globalLastTime
+	  };
+	  // console.log('fireCoins', message);
+	  window.pubnub.fire(
+	    {
+	      message,
+	      channel: window.currentFireChannelName,
+	      sendByPost: false, // true to send via posts
+	    });
+	};
+
+  //MOVE ON
+
+  // If person leaves or refreshes the window, run the unsubscribe function
+  window.addEventListener('beforeunload', () => {
+    navigator.sendBeacon(`https://pubsub.pubnub.com/v2/presence/sub_key/mySubKey/channel/ch1/leave?uuid=${window.UniqueID}`); // pub
+    window.globalUnsubscribe();
+  });
+  // Unsubscribe people from PubNub network
+  window.globalUnsubscribe = function () {
+    try {
+      // console.log('unsubscribing', window.currentChannelName);
+      window.pubnub.unsubscribe({
+        channels: [window.currentChannelName, window.currentFireChannelName],
+        withPresence: true
+      });
+      window.pubnub.removeListener(window.listener);
+    } catch (err) {
+      console.log("Failed to UnSub");
+    }
+  };
+  window.pubnub.addListener(window.listener);
+};
+
+
+
+
 window.addEventListener("load", function(event) {
 
 	function playSound(soundfile) {
@@ -42,6 +126,8 @@ window.addEventListener("load", function(event) {
 	};
 	var render = function() {
 		display.update();
+		
+		display.drawRectangle(game.world.me.x,game.world.me.y);
 		// render gameobjects
 		display.render();
 	};
