@@ -191,8 +191,24 @@ class Projectile extends Transform{
 
 class Bullet extends Projectile{
 	// **************************************************************************************************************************************************************
+	constructor(){
+		this.isDead = false;
+		this.framesLeftToShoot = 60;
+	}
+	
+	update(){
+		super.update();
+		
+		this.framesLeftToShoot--;
+		
+		if(this.framesLeftToShoot <= 0){
+			isDead = true;
+		}
+	}
 }
 
+// AUDIO SOMEWHERE  // ***********************************************************************************************************************************************************
+//audio is html-specific
 class Player extends Projectile{
 	constructor(x = 0,y = 0,vx = 0,vy = 0, theta = 0, av=0){
 		super(x,y,vx,vy,theta,av);
@@ -204,24 +220,35 @@ class Player extends Projectile{
 		this.rSpeed = 1;
 		this.maxRSpeed = 8;
 	}
-	update(){
+	update(){		
+		this.framesLeftToShoot += -1;
 		super.update();
 		
-		av *= .7;
-		av += rSpeed * this.control;
-		if (av > maxRSpeed){ av = maxRSpeed; }
+		this.av *= .7;
+		this.av += this.rSpeed * this.control;
+		if (this.av > this.maxRSpeed){ this.av = this.maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
 			this.framesLeftToShoot = 10;
 			this.shoot();
 		}
+
+		this.bullets.forEach((bill) => 
+			{
+				if(bill.isDead){
+					console.log("DESTROYED " + this.bullets.remove(bill));
+				}
+			}
+		);
+		// ***********************************************************************************************************************************************************
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
-		this.this.pos = f.v.add(this.pos, force);
+		this.pos = f.v.add(this.pos, force);
 	}	
 	shoot(){
-		this.bullets.push(/*new Bullet*/); // **************************************************************************************************************************************************************
+		this.bullets.push(new Bullet()); // **************************************************************************************************************************************************************
+		//should just be new Bullet(), no constructors, I believe
 	}
 }
 

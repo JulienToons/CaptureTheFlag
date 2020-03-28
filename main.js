@@ -11,6 +11,12 @@ window.keyMessages = [];
 
 window.addEventListener("load", function(event) {
 
+	function playSound(soundfile) {
+		document.getElementById("dummy").innerHTML = 
+		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
+	}
+
+
 	const AssetsManager = function() {
 		this.playerSprite = undefined;
 		this.bulletSprite = undefined;
