@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+	<!--  <meta name = "viewport" content = "user-scalable=no,width=device-width"> -->
+	
+    <link href = "style.css" rel = "stylesheet" type = "">
+    <title>Capture The Flipping Flag</title>
+
+	<script type = "text/javascript">	
+		var needResize = false;
+		let sources = ["display", "game", "engine", "controller", "main"];
+		
+		for (let index = 0; index < sources.length; index ++) {
+			let script = document.createElement("script");
+			script.setAttribute("type", "text/javascript");
+			script.setAttribute("src", String(sources[index] + ".js"));
+			document.head.appendChild(script);
+		}
+		function closeButton(){
+			needResize = true;
+		};
+		
+    </script>
+		  
+  </head>
+
+  <body>
+	<div id="main">
+		<div id = "canvasContainer" >
+			<canvas id="canvas"></canvas>
+		</div>
+	</div>
+    
+  </body>
+
+</html> 
