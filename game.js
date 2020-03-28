@@ -6,12 +6,12 @@ const Game = function(w,h) {
 };
 Game.prototype = { constructor : Game };
 
-Game.World = function(w = 100, h = 100, cw = 10, ch = 10) {
+Game.World = function(w = 100, h = 100, cs = .2) {
 	this.height = h;
 	this.width = w;
-	this.camera = new Camera(0,0,cw, ch);
+	this.camera = undefined;
 	//this.gravity = g;
-	
+	this.temp = cs;
 	this.me = undefined;
 	this.players = [];
 
@@ -22,11 +22,13 @@ Game.World.prototype = {
   
 	setup:function() {
 		console.log("Capture The Flag [pitch-controlled] vALPHA 0.01");
-		this.me = new Player(f.rand(1,cw),f.rand(1,h-1),1,1);
+		this.camera = new Game.Camera(0,0,this.temp);
+		this.me = new Player(f.rand(1,this.width),f.rand(1,this.height-1),1,1);
 	},
 
 	update:function() {
-		this.camera.update(me);
+		this.camera.update(this.me);
+		this.me.update();
 	}
 };
 
@@ -43,6 +45,9 @@ class f{
 	}
 	static toRad(a){
 		return a * Math.PI / 180;
+	}
+	static exists(a){
+		return a != Infinity && a != null && a != undefined;
 	}
 	static random(a,b = null){
 		if(f.exists(b)){
@@ -105,7 +110,8 @@ class f{
 	}
 }
 
-Game.Camera = function(xx,yy){
+Game.Camera = function(xx,yy,cs = .2){
+	this.scale = cs;
 	this.x = xx;
 	this.y = yy;
 	this.x_offset = 0;
@@ -121,11 +127,11 @@ Game.Camera.prototype = {
 	constructor: Game.Camera,
 	shake:function(){
 		this.shakeFrames = 12;
-	}
+	},
 	update:function(player){
 		// lerp function (aka slowly moves to player's pos as if connected by a smooth spring
-		this.x = (Math.abs(this.x - player.x) <= this.snapDistance)   (player.x) + (this.lerpFactor * (this.x - player.x))  :  player.x;
-		this.y = (Math.abs(this.x - player.x) <= this.snapDistance)   (player.y) + (this.lerpFactor * (this.y - player.y))  :  player.y;
+		this.x = (Math.abs(this.x - player.x) <= this.snapDistance)?   (player.x) + (this.lerpFactor * (this.x - player.x))  :  player.x;
+		this.y = (Math.abs(this.x - player.x) <= this.snapDistance)?  (player.y) + (this.lerpFactor * (this.y - player.y))  :  player.y;
 	}
 };
 
@@ -172,7 +178,7 @@ class Transform extends StrictTransform{
 	}
 	update(){
 		super.update();
-		theta += omega;
+		this.theta += this.omega;
 	}
 	get av() {
 		return this.angularVelocity;
@@ -192,19 +198,22 @@ class Transform extends StrictTransform{
 	set omega(x) {
 		this.angularVelocity = x;
 	}
+	get angleInDeg(){ 
+		return f.toDeg(this.theta);
+	};
 };
 
 class Projectile extends Transform{
-	constructor(x,y,vx,vy,theta=0,av=0){
-		this.super(x,y,vx,vy,theta,av);
-		this.speed = 5;
+	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 10){
+		super(x,y,vx,vy,theta,av);
+		this.speed = speed;
 	}
 	update(){
 		super.update();
 		
 		// lerp vx?
 		
-		this.v = f.v.multiply(f.v.normal(this.theta),speed);
+		this.v = f.v.multiply(f.v.normal(this.theta),this.speed);
 	}
 }
 
@@ -235,8 +244,8 @@ class Player extends Projectile{
 		this.bullets = [];
 		
 		this.framesLeftToShoot = 15;
-		this.rSpeed = 1;
-		this.maxRSpeed = 8;
+		this.rSpeed = .04;
+		this.maxRSpeed = .1;
 	}
 	update(){		
 		this.framesLeftToShoot += -1;
@@ -270,7 +279,7 @@ class Player extends Projectile{
 	}
 }
 
-private class Particle extends StrictTransform{
+class Particle extends StrictTransform{
 	constructor(x = 0,y = 0,vx = 0,vy = 0, duration = 50, color = "#555", a = 1) {
 		super(x,y,vx,vy);
 		this.duration = duration;

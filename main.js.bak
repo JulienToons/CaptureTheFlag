@@ -1,3 +1,4 @@
+/*
 window.syncOtherPlayerFrameDelay = 0; //30 frames allows for 500ms of network jitter, to prevent late frames
 window.currentChannelName; // Global variable for the current channel that your player character is on
 window.currentFireChannelName; // Global variable that checks the current stage you are on to send the correct information to the PubNub Block
@@ -9,14 +10,91 @@ window.globalWasHeroMoving = true;
 window.updateOccupancyCounter = false; // Occupancy Counter variable to check if the timer has already been called in that scene
 window.keyMessages = [];
 
+
+window.createMyPubNub = function (currentLevel) {
+  // console.log('createMyPubNub', currentLevel);
+  window.globalCurrentLevel = currentLevel; // Get the current level and set it to the global level
+
+  //The channels should be the same while we have only one map/level
+  window.currentFireChannelName = 'realtimephaserFire2';
+  window.currentChannelName = `realtimephaser${currentLevel}`; // Create the channel name + the current level. This way each level is on its own channel.
+  let checkIfJoined = false; // If player has joined the channel
+  // Setup your PubNub Keys
+  window.pubnub = new window.PubNub({
+    publishKey: 'pub-c-341e4eab-1e92-41c2-a707-eeb0a8e97e43',
+    subscribeKey: 'sub-c-645faf0a-7143-11ea-8eaf-9ea4064cf66f',
+    uuid: window.UniqueID,
+  });
+  // Subscribe to the two PubNub Channels
+  window.pubnub.subscribe({
+    channels: [window.currentChannelName, window.currentFireChannelName],
+    withPresence: true,
+  });
+  // ADD LISTENER HERE
+
+
+  window.sendKeyMessage = (keyMessage) => {
+  try {
+    if (window.globalMyHero) {
+      window.pubnub.publish({
+        message: {
+          uuid: window.UniqueID,
+          keyMessage,
+          position: window.globalMyHero.body.position,
+          frameCounter: window.frameCounter
+        },
+        channel: window.currentChannelName,
+        sendByPost: false, // true to send via posts
+      });
+    }
+	      // console.log("send message!")
+	  } catch (err) {
+	    console.log(err);
+	  }
+	};
+	window.fireCoins = () => {
+	  const message = {
+	    uuid: window.UniqueID,
+	    coinCache: window.globalLevelState.coinCache,
+	    currentLevel: window.globalCurrentLevel,
+	    time: window.globalLastTime
+	  };
+	  // console.log('fireCoins', message);
+	  window.pubnub.fire(
+	    {
+	      message,
+	      channel: window.currentFireChannelName,
+	      sendByPost: false, // true to send via posts
+	    });
+	};
+
+  //MOVE ON
+
+  // If person leaves or refreshes the window, run the unsubscribe function
+  window.addEventListener('beforeunload', () => {
+    navigator.sendBeacon(`https://pubsub.pubnub.com/v2/presence/sub_key/mySubKey/channel/ch1/leave?uuid=${window.UniqueID}`); // pub
+    window.globalUnsubscribe();
+  });
+  // Unsubscribe people from PubNub network
+  window.globalUnsubscribe = function () {
+    try {
+      // console.log('unsubscribing', window.currentChannelName);
+      window.pubnub.unsubscribe({
+        channels: [window.currentChannelName, window.currentFireChannelName],
+        withPresence: true
+      });
+      window.pubnub.removeListener(window.listener);
+    } catch (err) {
+      console.log("Failed to UnSub");
+    }
+  };
+  window.pubnub.addListener(window.listener);
+};
+
+*/
+
+
 window.addEventListener("load", function(event) {
-
-	function playSound(soundfile) {
-		document.getElementById("dummy").innerHTML = 
-		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
-	}
-
-
 	const AssetsManager = function() {
 		this.playerSprite = undefined;
 		this.bulletSprite = undefined;
@@ -32,6 +110,10 @@ window.addEventListener("load", function(event) {
 		}
 	};
 
+	var playSound = function (soundfile) {
+		document.getElementById("dummy").innerHTML = 
+		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
+	}
 	// var functions
 	var keyDownUp = function(event) {
 		controller.keyDownUp(event.type, event.keyCode);
@@ -41,20 +123,22 @@ window.addEventListener("load", function(event) {
 		display.render();
 	};
 	var render = function() {
-		display.update();
-		
-		display.drawRectangle();
+		display.update(game.world.width,game.world.height);
+		// add camera later
+		display.drawImg(assets_manager.playerSprite, game.world.me.x-25,game.world.me.y-25,50, game.world.me.angleInDeg);
 		// render gameobjects
 		display.render();
 	};
 	var update = function(t) {
 		// something like... 
-		//if (controller.left.active) {       console.log("left");           }
-		//if (controller.right.active) {            console.log("right");                }
-		//if (controller.up.active) { console.log("up");controller.up.active= false;}//game.world.player.jump();      controller.up= false; }
-		
-		// or
-		// game.world.player.down = controller.down.active;
+		if (controller.left.active) {
+			game.world.me.control = -1;
+		} else if (controller.right.active) {
+			game.world.me.control = 1;
+		}
+		else{
+			game.world.me.control = 0;
+		}
 		game.update(t);
 		return;
 	};
@@ -82,20 +166,17 @@ window.addEventListener("load", function(event) {
 	display.buffer.imageSmoothingEnabled = false; //  sure??  ************************************************************************************!!!!!!!!!
 
 	game.world.setup();
-	/* 
-	assets_manager.requestImage("imgs/theImageIWant.png", (image) => {
+	
+	assets_manager.requestImage("imgs/rocket.png", (image) => {
 
-		assets_manager.cannon_img = image;
+		assets_manager.playerSprite = image;
 
 		// request more imgs
 		
 		resize();
 		engine.start();
 
-	});*/
-
-	resize();
-	engine.start();
+	});
 
 
 	window.addEventListener("keydown", keyDownUp);

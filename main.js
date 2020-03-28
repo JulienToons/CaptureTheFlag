@@ -1,3 +1,4 @@
+/*
 window.syncOtherPlayerFrameDelay = 0; //30 frames allows for 500ms of network jitter, to prevent late frames
 window.currentChannelName; // Global variable for the current channel that your player character is on
 window.currentFireChannelName; // Global variable that checks the current stage you are on to send the correct information to the PubNub Block
@@ -90,17 +91,10 @@ window.createMyPubNub = function (currentLevel) {
   window.pubnub.addListener(window.listener);
 };
 
-
+*/
 
 
 window.addEventListener("load", function(event) {
-
-	function playSound(soundfile) {
-		document.getElementById("dummy").innerHTML = 
-		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
-	}
-
-
 	const AssetsManager = function() {
 		this.playerSprite = undefined;
 		this.bulletSprite = undefined;
@@ -116,6 +110,10 @@ window.addEventListener("load", function(event) {
 		}
 	};
 
+	var playSound = function (soundfile) {
+		document.getElementById("dummy").innerHTML = 
+		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
+	}
 	// var functions
 	var keyDownUp = function(event) {
 		controller.keyDownUp(event.type, event.keyCode);
@@ -125,20 +123,22 @@ window.addEventListener("load", function(event) {
 		display.render();
 	};
 	var render = function() {
-		display.update();
-		
-		display.drawRectangle(game.world.me.x,game.world.me.y);
+		display.update(game.world.width,game.world.height);
+		// add camera later
+		display.drawImg(assets_manager.playerSprite, game.world.me.x-25,game.world.me.y-25,50, game.world.me.angleInDeg + 90);
 		// render gameobjects
 		display.render();
 	};
 	var update = function(t) {
 		// something like... 
-		//if (controller.left.active) {       console.log("left");           }
-		//if (controller.right.active) {            console.log("right");                }
-		//if (controller.up.active) { console.log("up");controller.up.active= false;}//game.world.player.jump();      controller.up= false; }
-		
-		// or
-		// game.world.player.down = controller.down.active;
+		if (controller.left.active) {
+			game.world.me.control = -1;
+		} else if (controller.right.active) {
+			game.world.me.control = 1;
+		}
+		else{
+			game.world.me.control = 0;
+		}
 		game.update(t);
 		return;
 	};
@@ -166,20 +166,17 @@ window.addEventListener("load", function(event) {
 	display.buffer.imageSmoothingEnabled = false; //  sure??  ************************************************************************************!!!!!!!!!
 
 	game.world.setup();
-	/* 
-	assets_manager.requestImage("imgs/theImageIWant.png", (image) => {
+	
+	assets_manager.requestImage("imgs/rocket.png", (image) => {
 
-		assets_manager.cannon_img = image;
+		assets_manager.playerSprite = image;
 
 		// request more imgs
 		
 		resize();
 		engine.start();
 
-	});*/
-
-	resize();
-	engine.start();
+	});
 
 
 	window.addEventListener("keydown", keyDownUp);
