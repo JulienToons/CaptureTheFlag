@@ -208,7 +208,7 @@ class Bullet extends Projectile{
 }
 
 // AUDIO SOMEWHERE  // ***********************************************************************************************************************************************************
-
+//audio is html-specific
 class Player extends Projectile{
 	constructor(x = 0,y = 0,vx = 0,vy = 0, theta = 0, av=0){
 		super(x,y,vx,vy,theta,av);
