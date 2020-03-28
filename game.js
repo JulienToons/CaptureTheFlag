@@ -177,7 +177,23 @@ class Transform extends StrictTransform{
 	}
 };
 
-class Player extends Transform{
+class Projectile extends Transform{
+	constructor(x,y,vx,vy,theta=0,av=0){
+		this.super(x,y,vx,vy,theta,av);
+		this.speed = 5;
+	}
+	update(){
+		super.update();
+		
+		this.pos = f.v.add(this.pos, f.v.projectAngle(speed, theta));
+	}
+}
+
+class Bullet extends Projectile{
+	// **************************************************************************************************************************************************************
+}
+
+class Player extends Projectile{
 	constructor(x = 0,y = 0,vx = 0,vy = 0, theta = 0, av=0){
 		super(x,y,vx,vy,theta,av);
 		this.health = 100;
@@ -185,15 +201,11 @@ class Player extends Transform{
 		this.bullets = [];
 		
 		this.framesLeftToShoot = 15;
+		this.rSpeed = 1;
+		this.maxRSpeed = 8;
 	}
 	update(){
-		let speed = 5;
-		let rSpeed = 1;
-		let maxRSpeed = 10;
-		
 		super.update();
-		this.pos = f.v.add(this.pos, f.v.projectAngle(speed, theta));
-		this.theta += av;
 		
 		av *= .7;
 		av += rSpeed * this.control;
@@ -209,7 +221,7 @@ class Player extends Transform{
 		this.this.pos = f.v.add(this.pos, force);
 	}	
 	shoot(){
-		
+		this.bullets.push(/*new Bullet*/); // **************************************************************************************************************************************************************
 	}
 }
 
