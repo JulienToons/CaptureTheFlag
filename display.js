@@ -5,7 +5,7 @@ const Display = function(canvas, container) {
 	this.TO_RADIANS = Math.PI /180;
 
 	this.drawRectangle = function(x, y, color = null, width =1, height=1) {
-	if (color == null){ color = "#ffffff";};
+	if (color == null){ color = "#abc";};
 	this.buffer.fillStyle = color;
 	this.buffer.fillRect(x, y, width, height);
 
