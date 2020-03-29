@@ -214,7 +214,7 @@ class Transform extends StrictTransform{
 };
 
 class Projectile extends Transform{
-	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 10){
+	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 1){
 		super(x,y,vx,vy,theta,av);
 		this.speed = speed;
 	}
@@ -266,13 +266,13 @@ class Player extends Projectile{
 		if ( this.av >  this.maxRSpeed){  this.av =  this.maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
-			this.framesLeftToShoot = 10;
+			this.framesLeftToShoot = 3;
 			this.shoot();
 		}
 
 		for(let i = 0; i <this.bullets.length; i++){
 			if(this.bullets[i].isDead){
-				console.log("DESTROYED " + this.bullets.splice(i - 1));
+				console.log("DESTROYED " + this.bullets.splice(i, 1));
 				i++;
 			}
 		}
@@ -283,7 +283,8 @@ class Player extends Projectile{
 	}	
 	shoot(){
 		//console.log("SHOOT");
-		let shootingSpeed = 15;
+		let shootingSpeed = Math.random()*2 + 15;
+		// var rect = this().getBoundingClientRect
 		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * this.vx/f.v.mag(this.v), shootingSpeed * this.vy/f.v.mag(this.v),this.theta,0));
 		playSound("/sounds/shoot.wav");
 		// need lerp for this below

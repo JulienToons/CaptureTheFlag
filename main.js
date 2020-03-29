@@ -122,9 +122,14 @@ window.addEventListener("load", function(event) {
 		display.update(game.world.width,game.world.height);
 		// add camera later
 		for(let i = 0; i < game.world.me.bullets.length; i++){
-			display.drawImg(assets_manager.bulletSprite, game.world.me.bullets[i].x-1,game.world.me.bullets[i].y-20,20, game.world.me.bullets[i].angleInDeg + 180 + 45);
+			let x =  game.world.me.bullets[i].x-5;
+			let y =  game.world.me.bullets[i].y;
+
+			display.drawImg(assets_manager.bulletSprite, x, y, 0, 0, 10, 27, game.world.me.bullets[i].angleInDeg-90);
 		}
-		display.drawImg(assets_manager.playerSprite, game.world.me.x-25,game.world.me.y-25,50, game.world.me.angleInDeg + 90);
+		let rocketX = game.world.me.x;
+		let rocketY = game.world.me.y;
+		display.drawImg(assets_manager.playerSprite, rocketX, rocketY, -15, -25, 30, 55, game.world.me.angleInDeg + 90);
 		// render gameobjects
 		display.render();
 	};
