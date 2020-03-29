@@ -110,8 +110,9 @@ window.addEventListener("load", function(event) {
 	  thegame.game.update( new Date().getTime() );
 	  thegame.game.active = true;
 
+	  var game_count = 0;
 	  var game_count++;
-	  var games[thegame.id] = thegame;
+	  //var games[thegame.id] = thegame;
 
 	  return thegame;
 	 }
@@ -143,8 +144,6 @@ window.addEventListener("load", function(event) {
 	
 	var display        = new Display(document.querySelector("canvas"));
 	
-	//main.findGame();
-	var game = new Game(1920, 1080, thegame); 
 	//var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
 	var engine         = new Engine(40, render, update);
 	var controller     = new Controller();

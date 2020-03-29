@@ -110,6 +110,7 @@ window.addEventListener("load", function(event) {
 	  thegame.game.update( new Date().getTime() );
 	  thegame.game.active = true;
 
+	  var game_count = 0;
 	  var game_count++;
 	  var games[thegame.id] = thegame;
 
