@@ -16,6 +16,12 @@ Game.World = function(w = 100, h = 100, game_instance, cs = .2) {
 	this.players = [game_instance.client_list];
 };
 
+//server side we set the 'game_core' class to a global type, so that it can use it anywhere.
+if( 'undefined' != typeof global ) {
+    module.exports = global.game_core = game_core;
+}
+
+
 Game.World.prototype = {
 
 	constructor: Game.World,
