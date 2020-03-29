@@ -41,12 +41,13 @@ const Display = function(canvas, container) {
 		catch(e){ console.log("Img failed to load: "+e);}
 	};
 	  
-	this.drawImg = function(image, x, y, size, r) {
-		this.drawRectangle(x,y,"#000",50,40);
+	this.drawImg = function(image, x, y, ox, oy, width, height, r) {
+		// this.drawRectangle(x,y,"#000",50,40);
 		let rotation = r;
 		this.buffer.translate(x,y);
 		this.buffer.rotate(rotation * this.TO_RADIANS);
-		this.buffer.drawImage(image, -20,-20,size, size);
+		// this.drawRectangle(0,0,"#eee", 20, 20);
+		this.buffer.drawImage(image, ox, oy, width, height);
 		this.buffer.rotate(-rotation * this.TO_RADIANS);
 		this.buffer.translate(-x,-y);
 	};
