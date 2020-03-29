@@ -1,3 +1,4 @@
+var gameWidth, gameHeight;
 const Game = function(w,h) {
 	this.world    = new Game.World(w,h);
 	this.update   = function(t = 0) {
@@ -24,6 +25,8 @@ Game.World.prototype = {
 		console.log("Capture The Flag [pitch-controlled] vALPHA 0.01");
 		this.camera = new Game.Camera(0,0,this.temp);
 		this.me = new Player(f.rand(1,this.width),f.rand(1,this.height-1),1,1);
+		gameWidth = this.width;
+		gameHeight = this.height;
 	},
 
 	update:function() {
@@ -59,7 +62,7 @@ class f{
 	}
 	static random(a,b = null){
 		if(f.exists(b)){
-			return a + Math.random(b-a);
+			return a + Math.random() * (b-a);
 		}
 		else {
 			return Math.random(a);
@@ -214,7 +217,7 @@ class Transform extends StrictTransform{
 };
 
 class Projectile extends Transform{
-	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 1){
+	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 5){
 		super(x,y,vx,vy,theta,av);
 		this.speed = speed;
 	}
@@ -272,9 +275,29 @@ class Player extends Projectile{
 
 		for(let i = 0; i <this.bullets.length; i++){
 			if(this.bullets[i].isDead){
-				console.log("DESTROYED " + this.bullets.splice(i, 1));
+				//console.log("DESTROYED " + this.bullets.splice(i, 1));
 				i++;
 			}
+		}
+
+		let offsetConst = 50;
+		this.x += this.vx;
+		this.y += this.vy;
+		if(this.x > gameWidth - offsetConst){
+			this.x = gameHeight - offsetConst;
+			this.vx *= -1;
+		}
+		if(this.x < offsetConst){
+			this.x = offsetConst;
+			this.vx * -1;
+		}
+		if(this.y > gameHeight - offsetConst){
+			this.y = gameHeight - offsetConst;
+			this.vy *= -1;
+		}
+		if(this.y < offsetConst){
+			this.y = offsetConst;
+			this.vy * -1;
 		}
 	}
 	hit(dmg = 1, force = [0,0]){
@@ -288,7 +311,7 @@ class Player extends Projectile{
 		let degAngleOfSpread = 15;
 		let radAngle = degAngleOfSpread * Math.PI/180;
 		let temp = (Math.random()*radAngle) - 0.5 * radAngle;
-		console.log(temp);
+		// console.log(temp);
 		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * Math.cos(this.theta + temp), shootingSpeed * Math.sin(this.theta + temp),this.theta + temp,0));
 		playSound("/sounds/shoot.wav");
 		// need lerp for this below
