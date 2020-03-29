@@ -1,21 +1,21 @@
-const Game = function(w,h) {
-	this.world    = new Game.World(w,h);
+const Game = function(w,h, game_instance) {
+	this.world    = new Game.World(w,h, game_instance);
 	this.update   = function(t = 0) {
 		this.world.update();
 	};
 };
 Game.prototype = { constructor : Game };
 
-Game.World = function(w = 100, h = 100, cs = .2) {
+Game.World = function(w = 100, h = 100, game_instance, cs = .2) {
 	this.height = h;
 	this.width = w;
 	this.camera = undefined;
 	//this.gravity = g;
 	this.temp = cs;
-	this.me = undefined;
-	this.players = [];
-
+	this.me = undefined;      //game_instance.client_list.get(client_list.length-1);  //undefined
+	this.players = [game_instance.client_list];
 };
+
 Game.World.prototype = {
 
 	constructor: Game.World,
