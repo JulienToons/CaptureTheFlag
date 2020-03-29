@@ -125,8 +125,8 @@ window.addEventListener("load", function(event) {
 
 game_server.createGame = function(player){
   var thegame = {
-    id: UUID()            //give the game an id, not really necessary considering there will only be one game instance
-    player_host: player   //not necessary either but for reference, this is the original player
+    id: UUID(),         //give the game an id, not really necessary considering there will only be one game instance
+    player_host: player,   //not necessary either but for reference, this is the original player
     client_list: [player]
   };
 
