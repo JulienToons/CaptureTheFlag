@@ -247,13 +247,12 @@ class Player extends Projectile{
 		this.rSpeed = .04;
 		this.maxRSpeed = .1;
 	}
-	update(){		
-		this.framesLeftToShoot += -1;
+	update(){
 		super.update();
 		
-		this.av *= .7;
-		this.av += this.rSpeed * this.control;
-		if (this.av > this.maxRSpeed){ this.av = this.maxRSpeed; }
+		av *= .7;
+		av += rSpeed * this.control;
+		if (av > maxRSpeed){ av = maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
 			this.framesLeftToShoot = 10;
@@ -270,12 +269,14 @@ class Player extends Projectile{
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
-		// need lerp for this below
-		// this.pos = f.v.add(this.pos, force);
+		this.this.pos = f.v.add(this.pos, force);
 	}	
 	shoot(){
 		let shootingSpeed = 8;
-		// this.bullets.push(new Bullet(this.x,this.y,  shootingSpeed * this.vx/f.v.mag(this.v), shootingSpeed * this.vy/f.v.mag(this.v),this.theta,0));
+		this.bullets.push(/*new Bullet*/); // **************************************************************************************************************************************************************
+		playSound("/sounds/shoot.wav");
+		// need lerp for this below
+		// this.pos = f.v.add(this.pos, force);
 	}
 }
 
