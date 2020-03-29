@@ -285,7 +285,11 @@ class Player extends Projectile{
 		//console.log("SHOOT");
 		let shootingSpeed = Math.random()*2 + 15;
 		// var rect = this().getBoundingClientRect
-		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * this.vx/f.v.mag(this.v), shootingSpeed * this.vy/f.v.mag(this.v),this.theta,0));
+		let degAngleOfSpread = 15;
+		let radAngle = degAngleOfSpread * Math.PI/180;
+		let temp = (Math.random()*radAngle) - 0.5 * radAngle;
+		console.log(temp);
+		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * Math.cos(this.theta + temp), shootingSpeed * Math.sin(this.theta + temp),this.theta + temp,0));
 		playSound("/sounds/shoot.wav");
 		// need lerp for this below
 		// this.pos = f.v.add(this.pos, force);

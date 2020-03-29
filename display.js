@@ -41,7 +41,7 @@ const Display = function(canvas, container) {
 		catch(e){ console.log("Img failed to load: "+e);}
 	};
 	  
-	this.drawImg = function(image, x, y, ox, oy, width, height, r) {
+	this.drawImg = function(image, x, y, ox, oy, width, height, r, spread) {
 		// this.drawRectangle(x,y,"#000",50,40);
 		let rotation = r;
 		this.buffer.translate(x,y);
