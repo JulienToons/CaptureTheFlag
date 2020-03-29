@@ -27,20 +27,6 @@ window.addEventListener("load", function(event) {
 		display.update(game.world.width,game.world.height);
 		
 	
-	//Create our game client instance.
-	game_var = new Game(1000, 600);
-
-			//Fetch the viewport
-		game_var.viewport = document.getElementById('viewport');
-
-		// 	//Fetch the rendering contexts
-		// game_var.ctx = game_var.viewport.getContext('2d');
-
-			//Set the draw style for the font
-		//game_var.ctx.font = '11px "Helvetica"';
-
-		//Finally, start the loop
-		game_var.update( new Date().getTime() );
 
 
 		/* cam
@@ -111,8 +97,8 @@ window.addEventListener("load", function(event) {
 	  thegame.game.active = true;
 
 	  var game_count = 0;
-	  var game_count++;
-	  //var games[thegame.id] = thegame;
+	  game_count+= 1;
+	  var games[thegame.id] = thegame;
 
 	  return thegame;
 	 }
@@ -144,7 +130,7 @@ window.addEventListener("load", function(event) {
 	
 	var display        = new Display(document.querySelector("canvas"));
 	
-	//var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
+	var game           = new Game(1920,1080,false); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
 	var engine         = new Engine(40, render, update);
 	var controller     = new Controller();
 	var assets_manager = new AssetsManager();

@@ -6,7 +6,7 @@ const Game = function(w,h, game_instance) {
 };
 Game.prototype = { constructor : Game };
 
-Game.World = function(w = 100, h = 100, game_instance, cs = .2) {
+Game.World = function(w = 100, h = 100, game_instance = false, cs = .2) {
 	this.height = h;
 	this.width = w;
 	this.camera = undefined;
