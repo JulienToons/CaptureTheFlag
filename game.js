@@ -272,7 +272,8 @@ class Player extends Projectile{
 
 		for(let i = 0; i <this.bullets.length; i++){
 			if(this.bullets[i].isDead){
-				console.log("DESTROYED " + this.bullets.splice(i));
+				console.log("DESTROYED " + this.bullets.splice(i - 1));
+				i++;
 			}
 		}
 	}
