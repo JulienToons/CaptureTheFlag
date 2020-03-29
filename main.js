@@ -80,7 +80,7 @@ window.addEventListener("load", function(event) {
 
 	var display        = new Display(document.querySelector("canvas"));
 	var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
-	var engine         = new Engine(24, render, update);
+	var engine         = new Engine(40, render, update);
 	var controller     = new Controller();
 	var assets_manager = new AssetsManager();
 
@@ -126,7 +126,7 @@ window.addEventListener("load", function(event) {
 //main used to be game_server
 main.createGame = function(player){
   var thegame = {
-    id: UUID(),            //give the game an id, not really necessary considering there will only be one game instance
+    id: UUID(),         //give the game an id, not really necessary considering there will only be one game instance
     player_host: player,   //not necessary either but for reference, this is the original player
     client_list: [player]
   };
