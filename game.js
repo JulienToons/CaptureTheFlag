@@ -263,24 +263,24 @@ class Player extends Projectile{
 	update(){
 		super.update();
 
-		let offsetConst = 50;
+		let offsetConst = 20;
 		this.x += this.vx;
 		this.y += this.vy;
 		if(this.x > gameWidth - offsetConst){
 			this.x = gameWidth - offsetConst;
-			this.vx = -Math.abs(this.vx);
+			this.theta += Math.PI/2;
 		}
 		if(this.x < offsetConst){
 			this.x = offsetConst;
-			this.vx = Math.abs(this.vx);
+			this.theta += Math.PI/2;
 		}
 		if(this.y > gameHeight - offsetConst){
 			this.y = gameHeight - offsetConst;
-			this.vy = Math.abs(this.vy);
+			this.theta += Math.PI/2;
 		}
 		if(this.y < offsetConst){
 			this.y = offsetConst;
-			this.vy = -Math.abs(this.vy);
+			this.theta += Math.PI/2;
 		}
 
 		this.framesLeftToShoot--;
@@ -314,7 +314,8 @@ class Player extends Projectile{
 		let temp = (Math.random()*radAngle) - 0.5 * radAngle;
 		// console.log(temp);
 		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * Math.cos(this.theta + temp), shootingSpeed * Math.sin(this.theta + temp),this.theta + temp,0));
-		playAudio("sounds/shoot.mp3");
+		
+		playAudio("sounds/shoot_sound_" + Math.ceil(Math.random()*5) + ".wav");
 		// need lerp for this below
 		// this.pos = f.v.add(this.pos, force);
 	}
