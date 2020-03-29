@@ -35,9 +35,9 @@ const Display = function(canvas, container) {
 	this.update = function(w,h){
 		this.drawRectangle(0,0,"#5bb",w,h);
 	};
-	this.drawObject = function(image, x,y,size){
+	this.drawObject = function(image, x,y,w,h=w){
 		this.drawRectangle(x,y);
-		try{ this.buffer.drawImage(image, x,y,size, size);}
+		try{ this.buffer.drawImage(image, x,y,w, h);}
 		catch(e){ console.log("Img failed to load: "+e);}
 	};
 	  
