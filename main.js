@@ -122,7 +122,7 @@ window.addEventListener("load", function(event) {
 		display.update(game.world.width,game.world.height);
 		// add camera later
 		for(let i = 0; i < game.world.me.bullets.length; i++){
-			display.drawImg(assets_manager.bulletSprite, game.world.me.bullets[i].x-25,game.world.me.bullets[i].y-25,20, game.world.me.bullets[i].angleInDeg + 90 + 45);
+			display.drawImg(assets_manager.bulletSprite, game.world.me.bullets[i].x-1,game.world.me.bullets[i].y-20,20, game.world.me.bullets[i].angleInDeg + 180 + 45);
 		}
 		display.drawImg(assets_manager.playerSprite, game.world.me.x-25,game.world.me.y-25,50, game.world.me.angleInDeg + 90);
 		// render gameobjects

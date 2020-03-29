@@ -231,7 +231,7 @@ class Bullet extends Transform{
 	constructor(x,y,vx,vy,theta=0,av=0){
 		super(x,y,vx,vy,theta,av);
 		this.isDead = false;
-		this.framesLeftToShoot = 600;
+		this.framesLeftToShoot = 120;
 	}
 	
 	update(){
@@ -270,13 +270,12 @@ class Player extends Projectile{
 			this.shoot();
 		}
 
-		this.bullets.forEach((bill) => 
-			{
-				if(bill.isDead){
-					console.log("DESTROYED " + this.bullets.remove(bill));
-				}
+		for(let i = 0; i <this.bullets.length; i++){
+		{
+			if(this.bullets[i].isDead){
+				console.log("DESTROYED " + this.bullets.splice(i));
 			}
-		);
+		}
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
@@ -284,7 +283,7 @@ class Player extends Projectile{
 	}	
 	shoot(){
 		//console.log("SHOOT");
-		let shootingSpeed = 8;
+		let shootingSpeed = 15;
 		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * this.vx/f.v.mag(this.v), shootingSpeed * this.vy/f.v.mag(this.v),this.theta,0));
 		playSound("/sounds/shoot.wav");
 		// need lerp for this below
