@@ -189,6 +189,8 @@ class Transform extends StrictTransform{
 	get theta() {
 		return this.angle;
 	}
+	get av(){ return this.angularVelocity;}
+	set av(a){ this.angularVelocity = a};
 	set theta(t){
 		this.angle = t;
 	}
@@ -250,8 +252,8 @@ class Player extends Projectile{
 	update(){
 		super.update();
 		
-		av *= .7;
-		av += rSpeed * this.control;
+		this.av *= .7;
+		this.av += rSpeed * this.control;
 		if (av > maxRSpeed){ av = maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
