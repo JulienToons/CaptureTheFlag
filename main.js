@@ -48,11 +48,11 @@ window.addEventListener("load", function(event) {
 			let x =  (cx - game.world.me.bullets[i].x) * scale ;
 			let y =  (cy  - game.world.me.bullets[i].y) * scale;
 
-			display.drawImg(assets_manager.bulletSprite, x, y, 0, 0, 5*scale, 15*scale, game.world.me.bullets[i].angleInDeg-90); // * scale?
+			display.drawImg(assets_manager.bulletSprite, x, y, 0, 0, 5*scale, 15*scale, game.world.me.bullets[i].angleInDeg+90); // * scale?
 		}
 		let rocketX = (cx - game.world.me.x) * scale;
 		let rocketY = (cy - game.world.me.y) * scale;
-		display.drawImg(assets_manager.playerSprite, rocketX, rocketY, -15, -25, 15 * scale, 27 * scale, game.world.me.angleInDeg + 90); // scale?
+		display.drawImg(assets_manager.playerSprite, rocketX, rocketY, -15, -25, 15 * scale, 27 * scale, game.world.me.angleInDeg - 90); // scale?
 		// render gameobjects
 		display.render();
 	};
@@ -79,8 +79,8 @@ window.addEventListener("load", function(event) {
 	}, 100);
 
 	var display        = new Display(document.querySelector("canvas"));
-	var game           = new Game(1000,600, null); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
-	var engine         = new Engine(1000/30, render, update);
+	var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
+	var engine         = new Engine(24, render, update);
 	var controller     = new Controller();
 	var assets_manager = new AssetsManager();
 
@@ -102,7 +102,7 @@ window.addEventListener("load", function(event) {
 
 			assets_manager.bulletSprite = image;
 			
-			assets_manager.requestImage("imgs/space.jpg", (image) => {
+			assets_manager.requestImage("imgs/iu3.png", (image) => {
 
 				assets_manager.backgroundImage = image;
 				

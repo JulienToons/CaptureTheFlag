@@ -6,9 +6,13 @@ const Controller = function() {
 	this.keyDownUp = function(type, key_code) {
 		var down = (type == "keydown") ? true : false;
 
+		// switch(key_code) {
+		// 	case 37: this.left.getInput(down);  break;
+		// 	case 39: this.right.getInput(down);
+		// }
 		switch(key_code) {
-			case 37: this.left.getInput(down);  break;
-			case 39: this.right.getInput(down);
+			case 65: this.left.getInput(down);  break;
+			case 68: this.right.getInput(down);
 		}
 	};
 

@@ -29,6 +29,9 @@ Game.World.prototype = {
 	setup:function() {
 		console.log("Capture The Flag [pitch-controlled] vALPHA 0.01");
 		this.camera = new Game.Camera(0,0,this.temp);
+		this.me = new Player(f.rand(1,this.width),f.rand(1,this.height-1),1,1);
+		gameWidth = this.width;
+		gameHeight = this.height;
 		let boundingSafetyVar = 40;
 		this.me = new Player(f.rand(boundingSafetyVar,this.width),f.rand(boundingSafetyVar,this.height),1,1);
 	},
@@ -42,9 +45,8 @@ Game.World.prototype = {
 	}
 };
 
-var playSound = function (soundfile) {
-		document.getElementById("dummy").innerHTML = 
-		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
+function playAudio(url) {
+	new Audio(url).play();
 }
 
 // Staitc Helper Functions
@@ -66,7 +68,7 @@ class f{
 	}
 	static random(a,b = null){
 		if(f.exists(b)){
-			return a + (b-a*Math.random());
+			return a + Math.random() * (b-a);
 		}
 		else {
 			return a*Math.random();
@@ -125,7 +127,7 @@ class f{
 	}
 }
 
-Game.Camera = function(xx,yy,cs = .2){
+Game.Camera = function(xx,yy,cs = .3){
 	this.scale = cs;
 	this.x = xx;
 	this.y = yy;
@@ -221,7 +223,7 @@ class Transform extends StrictTransform{
 };
 
 class Projectile extends Transform{
-	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 1){
+	constructor(x,y,vx=0,vy=0,theta=0,av=0,speed = 5){
 		super(x,y,vx,vy,theta,av);
 		this.speed = speed;
 	}
@@ -266,6 +268,27 @@ class Player extends Projectile{
 	}
 	update(){
 		super.update();
+
+		let offsetConst = 20;
+		this.x += this.vx;
+		this.y += this.vy;
+		if(this.x > gameWidth - offsetConst){
+			this.x = gameWidth - offsetConst;
+			this.theta += Math.PI/2;
+		}
+		if(this.x < offsetConst){
+			this.x = offsetConst;
+			this.theta += Math.PI/2;
+		}
+		if(this.y > gameHeight - offsetConst){
+			this.y = gameHeight - offsetConst;
+			this.theta += Math.PI/2;
+		}
+		if(this.y < offsetConst){
+			this.y = offsetConst;
+			this.theta += Math.PI/2;
+		}
+
 		this.framesLeftToShoot--;
 		
 		this.av *= .7;
@@ -273,13 +296,13 @@ class Player extends Projectile{
 		if ( this.av >  this.maxRSpeed){  this.av =  this.maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
-			this.framesLeftToShoot = 3;
+			this.framesLeftToShoot = 5;
 			this.shoot();
 		}
 
 		for(let i = 0; i <this.bullets.length; i++){
 			if(this.bullets[i].isDead){
-				console.log("DESTROYED " + this.bullets.splice(i, 1));
+				//console.log("DESTROYED " + this.bullets.splice(i, 1));
 				i++;
 			}
 		}
@@ -292,12 +315,13 @@ class Player extends Projectile{
 		//console.log("SHOOT");
 		let shootingSpeed = Math.random()*2 + 15;
 		// var rect = this().getBoundingClientRect
-		let degAngleOfSpread = 15;
+		let degAngleOfSpread = 2;
 		let radAngle = degAngleOfSpread * Math.PI/180;
 		let temp = (Math.random()*radAngle) - 0.5 * radAngle;
-		console.log(temp);
+		// console.log(temp);
 		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * Math.cos(this.theta + temp), shootingSpeed * Math.sin(this.theta + temp),this.theta + temp,0));
-		playSound("/sounds/shoot.wav");
+		
+		playAudio("sounds/shoot_sound_" + Math.ceil(Math.random()*5) + ".wav");
 		// need lerp for this below
 		// this.pos = f.v.add(this.pos, force);
 	}
