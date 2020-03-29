@@ -13,7 +13,12 @@ Game.World = function(w = 100, h = 100, game_instance, cs = .2) {
 	//this.gravity = g;
 	this.temp = cs;
 	this.me = undefined;      //game_instance.client_list.get(client_list.length-1);  //undefined
-	this.players = [game_instance.client_list];
+	if(game_instance){
+		this.players = [game_instance.client_list];
+	}
+	else{
+		this.players = [];
+	}
 };
 
 //server side we set the 'game_core' class to a global type, so that it can use it anywhere.

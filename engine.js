@@ -14,7 +14,7 @@ const Engine = function(time_step, render, update) {
 
 
   var
-    game_server = module.exports = { games : {}, game_count:0 },
+    engine = module.exports = { games : {}, game_count:0 },
     UUID        = require('node-uuid'),
     verbose     = true;
 
@@ -23,25 +23,25 @@ const Engine = function(time_step, render, update) {
     global.window = global.document = global;
 
     //Import shared game library code.
-    require('./game.core.js');
+    require('./game.js');
 
     //A simple wrapper for logging so we can toggle it,
     //and augment it for clarity.
-    game_server.log = function() {
+    engine.log = function() {
         if(verbose) console.log.apply(this,arguments);
     };
 
-    game_server.fake_latency = 0;
-    game_server.local_time = 0;
-    game_server._dt = new Date().getTime();
-    game_server._dte = new Date().getTime();
+    engine.fake_latency = 0;
+    engine.local_time = 0;
+    engine._dt = new Date().getTime();
+    engine._dte = new Date().getTime();
         //a local queue of messages we delay if faking latency
-    game_server.messages = [];
+    engine.messages = [];
 
     setInterval(function(){
-        game_server._dt = new Date().getTime() - game_server._dte;
-        game_server._dte = new Date().getTime();
-        game_server.local_time += game_server._dt/1000.0;
+        engine._dt = new Date().getTime() - engine._dte;
+        engine._dte = new Date().getTime();
+        engine.local_time += engine._dt/1000.0;
     }, 4);
 
 
