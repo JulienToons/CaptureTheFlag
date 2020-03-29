@@ -93,9 +93,57 @@ window.addEventListener("load", function(event) {
 			resize();
 		}
 	}, 100);
+	
+		
+		
+	//main used to be game_server
+	var createGame = function(player){
+	  var thegame = {
+		id: UUID(),         //give the game an id, not really necessary considering there will only be one game instance
+		player_host: player,   //not necessary either but for reference, this is the original player
+		client_list: [player]
+	  };
 
+	  // var client_list = [player];
+
+	  thegame.game = new Game(1920, 1080, thegame);    //game takes width and height according to Vikram blame him
+	  thegame.game.update( new Date().getTime() );
+	  thegame.game.active = true;
+
+	  var game_count++;
+	  var games[thegame.id] = thegame;
+
+	  return thegame;
+	 }
+
+	var startGame = function(game) {    //technically more of an add player to game than start game
+
+		for(var client in game.thegame.client_list){
+		  client.game = game;
+		}
+
+		//set this flag, so that the update loop can run it.
+		game.active = true;
+
+	}; //game_server.startGame
+
+	var findGame = function(player){
+	  if(this.game_count){  // <1 ?
+		for(var gameid in this.games){
+		  game_instance = this.games[gameid];       //esentially a fancy way of joining the (theoretically) only existing game
+		  game_instance.client_list.push(player);
+		  startGame(game_instance);
+		}
+	  }
+	  else{
+		this.createGame(player);
+		this.startGame(player);
+	  }
+	}
+	
 	var display        = new Display(document.querySelector("canvas"));
-	var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
+	
+	//var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
 	var engine         = new Engine(40, render, update);
 	var controller     = new Controller();
 	var assets_manager = new AssetsManager();
@@ -109,6 +157,8 @@ window.addEventListener("load", function(event) {
 	display.buffer.imageSmoothingEnabled = false; //  sure??  ************************************************************************************!!!!!!!!!
 
 	game.world.setup();
+	
+	
 	
 	assets_manager.requestImage("imgs/rocket.png", (image) => {
 
@@ -136,52 +186,3 @@ window.addEventListener("load", function(event) {
 	window.addEventListener("resize" , resize);
 
 });
-
-
-
-//main used to be game_server
-main.createGame = function(player){
-  var thegame = {
-    id: UUID(),         //give the game an id, not really necessary considering there will only be one game instance
-    player_host: player,   //not necessary either but for reference, this is the original player
-    client_list: [player]
-  };
-
-  // var client_list = [player];
-
-  thegame.game = new Game(1000, 600, thegame);    //game takes width and height according to Vikram blame him
-  thegame.game.update( new Date().getTime() );
-  thegame.game.active = true;
-
-  this.game_count++;
-  this.games[thegame.id] = thegame;
-
-  return thegame;
- }
-
-main.startGame = function(game) {    //technically more of an add player to game than start game
-
-    for(var client in game.thegame.client_list){
-      client.game = game;
-    }
-
-    //set this flag, so that the update loop can run it.
-    game.active = true;
-
-}; //game_server.startGame
-
-main.findGame = function(player){
-  if(this.game_count){
-    for(var gameid in this.games){
-      game_instance = this.games[gameid];       //esentially a fancy way of joining the (theoretically) only existing game
-      game_instance.client_list.push(player);
-      this.startGame(game_instance);
-    }
-  }
-  else{
-    this.createGame(player);
-    this.startGame(player);
-  }
-}
-
-
