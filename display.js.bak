@@ -42,7 +42,7 @@ const Display = function(canvas, container) {
 	};
 	  
 	this.drawImg = function(image, x, y, size, r) {
-		this.drawRectangle(x,y,"#000",50,10);
+		this.drawRectangle(x,y,"#000",50,40);
 		let rotation = r;
 		this.buffer.translate(x,y);
 		this.buffer.rotate(rotation * this.TO_RADIANS);

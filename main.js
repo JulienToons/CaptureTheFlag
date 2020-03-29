@@ -110,10 +110,6 @@ window.addEventListener("load", function(event) {
 		}
 	};
 
-	var playSound = function (soundfile) {
-		document.getElementById("dummy").innerHTML = 
-		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
-	}
 	// var functions
 	var keyDownUp = function(event) {
 		controller.keyDownUp(event.type, event.keyCode);
@@ -125,6 +121,9 @@ window.addEventListener("load", function(event) {
 	var render = function() {
 		display.update(game.world.width,game.world.height);
 		// add camera later
+		for(let i = 0; i < game.world.me.bullets.length; i++){
+			display.drawImg(assets_manager.bulletSprite, game.world.me.bullets[i].x-25,game.world.me.bullets[i].y-25,20, game.world.me.bullets[i].angleInDeg + 90 + 45);
+		}
 		display.drawImg(assets_manager.playerSprite, game.world.me.x-25,game.world.me.y-25,50, game.world.me.angleInDeg + 90);
 		// render gameobjects
 		display.render();
@@ -171,7 +170,11 @@ window.addEventListener("load", function(event) {
 
 		assets_manager.playerSprite = image;
 
-		// request more imgs
+		assets_manager.requestImage("imgs/nuke.png", (image) => {
+
+			assets_manager.bulletSprite = image;
+			
+		});
 		
 		resize();
 		engine.start();

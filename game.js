@@ -29,8 +29,16 @@ Game.World.prototype = {
 	update:function() {
 		this.camera.update(this.me);
 		this.me.update();
+		for(let i = 0; i < this.me.bullets.length; i++){
+			this.me.bullets[i].update();
+		}
 	}
 };
+
+var playSound = function (soundfile) {
+		document.getElementById("dummy").innerHTML = 
+		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
+}
 
 // Staitc Helper Functions
 class f{
@@ -219,11 +227,11 @@ class Projectile extends Transform{
 	}
 }
 
-class Bullet extends Projectile{
+class Bullet extends Transform{
 	constructor(x,y,vx,vy,theta=0,av=0){
-		this.super(x,y,vx,vy,theta,av);
+		super(x,y,vx,vy,theta,av);
 		this.isDead = false;
-		this.framesLeftToShoot = 60;
+		this.framesLeftToShoot = 600;
 	}
 	
 	update(){
@@ -251,10 +259,11 @@ class Player extends Projectile{
 	}
 	update(){
 		super.update();
+		this.framesLeftToShoot--;
 		
 		this.av *= .7;
-		this.av += rSpeed * this.control;
-		if (av > maxRSpeed){ av = maxRSpeed; }
+		this.av += this.rSpeed * this.control;
+		if ( this.av >  this.maxRSpeed){  this.av =  this.maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
 			this.framesLeftToShoot = 10;
@@ -271,11 +280,12 @@ class Player extends Projectile{
 	}
 	hit(dmg = 1, force = [0,0]){
 		this.health += -Math.abs(dmg);
-		this.this.pos = f.v.add(this.pos, force);
+		//this.pos = f.v.add(this.pos, force);
 	}	
 	shoot(){
-		let shootingSpeed = 8;
-		this.bullets.push(/*new Bullet*/); // **************************************************************************************************************************************************************
+		//console.log("SHOOT");
+		let shootingSpeed = 15;
+		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * this.vx/f.v.mag(this.v), shootingSpeed * this.vy/f.v.mag(this.v),this.theta,0));
 		playSound("/sounds/shoot.wav");
 		// need lerp for this below
 		// this.pos = f.v.add(this.pos, force);
