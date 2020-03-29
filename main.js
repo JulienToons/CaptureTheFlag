@@ -80,7 +80,7 @@ window.addEventListener("load", function(event) {
 
 	var display        = new Display(document.querySelector("canvas"));
 	var game           = new Game(1920,1080); // pixel resolution (probrably will want it to be low for fps but high for world size + cam.
-	var engine         = new Engine(24, render, update);
+	var engine         = new Engine(40, render, update);
 	var controller     = new Controller();
 	var assets_manager = new AssetsManager();
 
