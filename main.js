@@ -123,10 +123,11 @@ window.addEventListener("load", function(event) {
 
 
 
-game_server.createGame = function(player){
+//main used to be game_server
+main.createGame = function(player){
   var thegame = {
-    id: UUID()            //give the game an id, not really necessary considering there will only be one game instance
-    player_host: player   //not necessary either but for reference, this is the original player
+    id: UUID(),            //give the game an id, not really necessary considering there will only be one game instance
+    player_host: player,   //not necessary either but for reference, this is the original player
     client_list: [player]
   };
 
@@ -142,7 +143,7 @@ game_server.createGame = function(player){
   return thegame;
  }
 
-game_server.startGame = function(game) {    //technically more of an add player to game than start game
+main.startGame = function(game) {    //technically more of an add player to game than start game
 
     for(var client in game.thegame.client_list){
       client.game = game;
@@ -153,7 +154,7 @@ game_server.startGame = function(game) {    //technically more of an add player 
 
 }; //game_server.startGame
 
-game_server.findGame = function(player){
+main.findGame = function(player){
   if(this.game_count){
     for(var gameid in this.games){
       game_instance = this.games[gameid];       //esentially a fancy way of joining the (theoretically) only existing game
