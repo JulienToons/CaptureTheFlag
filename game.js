@@ -7,7 +7,7 @@ const Game = function(w,h) {
 };
 Game.prototype = { constructor : Game };
 
-Game.World = function(w = 100, h = 100, cs = .2) {
+Game.World = function(w = 100, h = 100, cs = .4) {
 	this.height = h;
 	this.width = w;
 	this.camera = undefined;
@@ -15,7 +15,6 @@ Game.World = function(w = 100, h = 100, cs = .2) {
 	this.temp = cs;
 	this.me = undefined;
 	this.players = [];
-
 };
 Game.World.prototype = {
 
@@ -27,6 +26,8 @@ Game.World.prototype = {
 		this.me = new Player(f.rand(1,this.width),f.rand(1,this.height-1),1,1);
 		gameWidth = this.width;
 		gameHeight = this.height;
+		let boundingSafetyVar = 40;
+		this.me = new Player(f.rand(boundingSafetyVar,this.width),f.rand(boundingSafetyVar,this.height),1,1);
 	},
 
 	update:function() {
@@ -38,9 +39,8 @@ Game.World.prototype = {
 	}
 };
 
-var playSound = function (soundfile) {
-		document.getElementById("dummy").innerHTML = 
-		"<embed src='"+soundfile+"' hidden='true' autostart='true' loop='false' />";
+function playAudio(url) {
+	new Audio(url).play();
 }
 
 // Staitc Helper Functions
@@ -65,7 +65,7 @@ class f{
 			return a + Math.random() * (b-a);
 		}
 		else {
-			return Math.random(a);
+			return a*Math.random();
 		}
 	}
 	static rand(a,b=null){return this.random(a,b);}
@@ -121,7 +121,7 @@ class f{
 	}
 }
 
-Game.Camera = function(xx,yy,cs = .2){
+Game.Camera = function(xx,yy,cs = .3){
 	this.scale = cs;
 	this.x = xx;
 	this.y = yy;
@@ -130,7 +130,7 @@ Game.Camera = function(xx,yy,cs = .2){
 	this.theta = 0;
 	this.following = null;
 	this.shakeFrames = 0;
-	this.lerpFactor = .2;
+	this.lerpFactor = .4;
 	this.snapDistance = 2;
 	// add shake animations with theta
 };
@@ -262,6 +262,27 @@ class Player extends Projectile{
 	}
 	update(){
 		super.update();
+
+		let offsetConst = 50;
+		this.x += this.vx;
+		this.y += this.vy;
+		if(this.x > gameWidth - offsetConst){
+			this.x = gameWidth - offsetConst;
+			this.vx = -Math.abs(this.vx);
+		}
+		if(this.x < offsetConst){
+			this.x = offsetConst;
+			this.vx = Math.abs(this.vx);
+		}
+		if(this.y > gameHeight - offsetConst){
+			this.y = gameHeight - offsetConst;
+			this.vy = Math.abs(this.vy);
+		}
+		if(this.y < offsetConst){
+			this.y = offsetConst;
+			this.vy = -Math.abs(this.vy);
+		}
+
 		this.framesLeftToShoot--;
 		
 		this.av *= .7;
@@ -269,7 +290,7 @@ class Player extends Projectile{
 		if ( this.av >  this.maxRSpeed){  this.av =  this.maxRSpeed; }
 		
 		if(this.framesLeftToShoot <= 0){
-			this.framesLeftToShoot = 3;
+			this.framesLeftToShoot = 5;
 			this.shoot();
 		}
 
@@ -278,26 +299,6 @@ class Player extends Projectile{
 				//console.log("DESTROYED " + this.bullets.splice(i, 1));
 				i++;
 			}
-		}
-
-		let offsetConst = 50;
-		this.x += this.vx;
-		this.y += this.vy;
-		if(this.x > gameWidth - offsetConst){
-			this.x = gameHeight - offsetConst;
-			this.vx *= -1;
-		}
-		if(this.x < offsetConst){
-			this.x = offsetConst;
-			this.vx * -1;
-		}
-		if(this.y > gameHeight - offsetConst){
-			this.y = gameHeight - offsetConst;
-			this.vy *= -1;
-		}
-		if(this.y < offsetConst){
-			this.y = offsetConst;
-			this.vy * -1;
 		}
 	}
 	hit(dmg = 1, force = [0,0]){
@@ -308,12 +309,12 @@ class Player extends Projectile{
 		//console.log("SHOOT");
 		let shootingSpeed = Math.random()*2 + 15;
 		// var rect = this().getBoundingClientRect
-		let degAngleOfSpread = 15;
+		let degAngleOfSpread = 2;
 		let radAngle = degAngleOfSpread * Math.PI/180;
 		let temp = (Math.random()*radAngle) - 0.5 * radAngle;
 		// console.log(temp);
 		this.bullets.push(new Bullet(this.x,this.y,shootingSpeed * Math.cos(this.theta + temp), shootingSpeed * Math.sin(this.theta + temp),this.theta + temp,0));
-		playSound("/sounds/shoot.wav");
+		playAudio("sounds/shoot.mp3");
 		// need lerp for this below
 		// this.pos = f.v.add(this.pos, force);
 	}
