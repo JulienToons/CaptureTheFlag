@@ -282,36 +282,36 @@ class Player extends Projectile{
 		if(this.x > gameWidth - offsetConst){
 			this.x = gameWidth - offsetConst;
 			if(this.theta >= 3*Math.PI/2 && this.theta <= 2*Math.PI){
-				this.theta = Math.PI + (2*Math.PI - this.theta);
+				//this.theta = Math.PI + (2*Math.PI - this.theta);
 			} else if(this.theta <= Math.PI/2&& this.theta >= 0){
-				this.theta = Math.PI - this.theta;
+				//this.theta = Math.PI - this.theta;
 			}
 			//this.theta += Math.PI/2;
 		}
 		if(this.x < offsetConst){
 			this.x = offsetConst;
 			if(this.theta >= Math.PI && this.theta <= 3*Math.PI/2){
-				this.theta = 0 - (this.theta - Math.PI);
+				//this.theta = 0 - (this.theta - Math.PI);
 			} else if(this.theta <= Math.PI&& this.theta >= 1*Math.PI/2){
-				this.theta = 0 + (this.theta - Math.PI);
+				//this.theta = 0 + (this.theta - Math.PI);
 			}
 			//this.theta += Math.PI/2;
 		}
 		if(this.y > gameHeight - offsetConst){
 			this.y = gameHeight - offsetConst;
 			if(this.theta >= 0 && this.theta <= .5*Math.PI){
-				this.theta = 2*Math.PI - this.theta;
+				//this.theta = 2*Math.PI - this.theta;
 			} else if(this.theta >= Math.PI/2&& this.theta < Math.PI){
-				this.theta = Math.PI + this.theta;
+				//this.theta = Math.PI + this.theta;
 			}
 			//this.theta += Math.PI/2;
 		}
 		if(this.y < offsetConst){
 			this.y = offsetConst;
 			if(this.theta >= Math.PI && this.theta <= 3*Math.PI/2){
-				this.theta = .5*Math.PI  + ((1.5*Math.PI) - this.theta);
+				//this.theta = .5*Math.PI  + ((1.5*Math.PI) - this.theta);
 			} else if(this.theta <= 2 * Math.PI&& this.theta >= 3*Math.PI/2){
-				this.theta = .5*Math.PI  - ((1.5*Math.PI) - this.theta);
+				//this.theta = .5*Math.PI  - ((1.5*Math.PI) - this.theta);
 			}
 			//this.theta += Math.PI/2;
 		}
