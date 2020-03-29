@@ -23,7 +23,8 @@ Game.World.prototype = {
 	setup:function() {
 		console.log("Capture The Flag [pitch-controlled] vALPHA 0.01");
 		this.camera = new Game.Camera(0,0,this.temp);
-		this.me = new Player(f.rand(1,this.width),f.rand(1,this.height-1),1,1);
+		let boundingSafetyVar = 40;
+		this.me = new Player(f.rand(boundingSafetyVar,this.width),f.rand(boundingSafetyVar,this.height),1,1);
 	},
 
 	update:function() {
@@ -59,10 +60,10 @@ class f{
 	}
 	static random(a,b = null){
 		if(f.exists(b)){
-			return a + Math.random(b-a);
+			return a + (b-a*Math.random());
 		}
 		else {
-			return Math.random(a);
+			return a*Math.random();
 		}
 	}
 	static rand(a,b=null){return this.random(a,b);}
@@ -127,7 +128,7 @@ Game.Camera = function(xx,yy,cs = .2){
 	this.theta = 0;
 	this.following = null;
 	this.shakeFrames = 0;
-	this.lerpFactor = .2;
+	this.lerpFactor = .4;
 	this.snapDistance = 2;
 	// add shake animations with theta
 };

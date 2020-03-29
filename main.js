@@ -2,6 +2,7 @@ window.addEventListener("load", function(event) {
 	const AssetsManager = function() {
 		this.playerSprite = undefined;
 		this.bulletSprite = undefined;
+		this.backgroundImage = undefined;
 	};
 
 	AssetsManager.prototype = {
@@ -24,16 +25,34 @@ window.addEventListener("load", function(event) {
 	};
 	var render = function() {
 		display.update(game.world.width,game.world.height);
-		// add camera later
+		
+		
+		/* cam
+	this.scale = cs;
+	this.x = xx;
+	this.y = yy;
+	this.x_offset = 0;
+	this.y_offset = 0;
+	this.theta = 0;
+		*/
+		let scale = 1/game.world.camera.scale;
+		let cx = game.world.camera.x + game.world.camera.x_offset + (game.world.width * .5/scale);
+		let cy = game.world.camera.y + game.world.camera.y_offset + (game.world.height  * .5/ scale);
+		let ca = game.world.camera.theta;
+		
+		display.buffer.rotate(ca);
+		
+		display.drawObject(assets_manager.backgroundImage,(cx-game.world.width) * scale,(cy-game.world.height) * scale,game.world.width*scale,game.world.height*scale);
+		
 		for(let i = 0; i < game.world.me.bullets.length; i++){
-			let x =  game.world.me.bullets[i].x-5;
-			let y =  game.world.me.bullets[i].y;
+			let x =  (cx - game.world.me.bullets[i].x) * scale ;
+			let y =  (cy  - game.world.me.bullets[i].y) * scale;
 
-			display.drawImg(assets_manager.bulletSprite, x, y, 0, 0, 10, 27, game.world.me.bullets[i].angleInDeg-90);
+			display.drawImg(assets_manager.bulletSprite, x, y, 0, 0, 5*scale, 15*scale, game.world.me.bullets[i].angleInDeg-90); // * scale?
 		}
-		let rocketX = game.world.me.x;
-		let rocketY = game.world.me.y;
-		display.drawImg(assets_manager.playerSprite, rocketX, rocketY, -15, -25, 30, 55, game.world.me.angleInDeg + 90);
+		let rocketX = (cx - game.world.me.x) * scale;
+		let rocketY = (cy - game.world.me.y) * scale;
+		display.drawImg(assets_manager.playerSprite, rocketX, rocketY, -15, -25, 15 * scale, 27 * scale, game.world.me.angleInDeg + 90); // scale?
 		// render gameobjects
 		display.render();
 	};
@@ -83,6 +102,11 @@ window.addEventListener("load", function(event) {
 
 			assets_manager.bulletSprite = image;
 			
+			assets_manager.requestImage("imgs/space.jpg", (image) => {
+
+				assets_manager.backgroundImage = image;
+				
+			});
 		});
 		
 		resize();
